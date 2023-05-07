@@ -1,0 +1,1 @@
+python run.py --model ResNet18 --dataset ARIL
