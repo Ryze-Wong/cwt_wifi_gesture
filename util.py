@@ -1,7 +1,11 @@
 from torch.utils.data import TensorDataset, DataLoader
+import torch
+import torch.nn as nn
+import torchvision
 
 from dataset import ARIL_dataset
 from model import ARIL_ResNet18
+from models.model_CBAM import ARIL_ResNet18_CBAM
 
 
 def load_data_n_model(dataset_name, model_name, root):
@@ -24,11 +28,12 @@ def load_data_n_model(dataset_name, model_name, root):
             model = ARIL_ResNet18(num_classes)
             train_epoch = 200  # 70
 
-    return train_loader, test_loader, model, train_epoch
+        elif model_name == "ResNet18_CBAM":
+            print("using model: ResNet18_CBAM")
+            model = ARIL_ResNet18_CBAM(num_classes)
+            train_epoch = 100  # 70
 
-import torch
-import torch.nn as nn
-import torchvision
+    return train_loader, test_loader, model, train_epoch
 
 
 class ChannelAttentionModule(nn.Module):

@@ -46,7 +46,7 @@ class ARIL_ResNet(nn.Module):
             nn.ReLU()
         )
         self.in_channels = 64
-        self.CBAM = CBAM(num_channels)
+        self.CBAM = CBAM(num_channels)  # 通道注意力机制
         self.conv1 = nn.Conv2d(num_channels, 64, kernel_size=7, stride=2, padding=3, bias=False)
         self.batch_norm1 = nn.BatchNorm2d(64)
         self.relu = nn.ReLU()
@@ -94,12 +94,12 @@ class ARIL_ResNet(nn.Module):
         return nn.Sequential(*layers)
 
 
-def ARIL_ResNet18(num_classes):
+def ARIL_ResNet18_CBAM(num_classes):
     return ARIL_ResNet(Block, [2, 2, 2, 2], num_classes=num_classes)
 
 
 if __name__ == '__main__':
     input = torch.ones((4, 52, 512, 512))
-    model = ARIL_ResNet18(num_classes=7)
+    model = ARIL_ResNet18_CBAM(num_classes=7)
     output = model(input)
     print(output.shape)

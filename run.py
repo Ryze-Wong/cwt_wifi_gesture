@@ -3,6 +3,7 @@ import torch
 import torch.nn as nn
 import argparse
 import tqdm
+import time
 from util import load_data_n_model
 from sklearn.metrics import confusion_matrix, accuracy_score, precision_score, recall_score, f1_score
 
@@ -25,7 +26,7 @@ def train(model, tensor_loader, num_epochs, learning_rate, criterion, device, da
             outputs = outputs.to(device)
             outputs = outputs.type(torch.FloatTensor)
             loss = criterion(outputs, labels)
-            if i%10==0:
+            if i % 10 == 0:
                 print("LOSS:", loss.item())
             loss.backward()
             optimizer.step()
@@ -33,11 +34,12 @@ def train(model, tensor_loader, num_epochs, learning_rate, criterion, device, da
             epoch_loss += loss.item() * inputs.size(0)
             predict_y = torch.argmax(outputs, dim=1).to(device)
             epoch_accuracy += (predict_y == labels.to(device)).sum().item() / labels.size(0)
-        if epoch % 50 == 0:
-            torch.save(model, "./weights/" + data_model + "/" + str(epoch) + "---.pth")
 
         epoch_loss = epoch_loss / len(tensor_loader.dataset)
         epoch_accuracy = epoch_accuracy / len(tensor_loader)
+        if epoch % 50 == 0:
+            torch.save(model, "./weights/" + data_model + "/" + str(epoch + 1) + "_" + time.time() + "_" + str(
+                epoch_accuracy) + "_" + str(epoch_loss) + "---.pth")
         print('Epoch:{}, Accuracy:{:.4f},Loss:{:.9f}'.format(epoch + 1, float(epoch_accuracy), float(epoch_loss)))
     return
 
@@ -92,8 +94,8 @@ def test(model, tensor_loader, criterion, device):
 def main():
     root = './data/'
     parser = argparse.ArgumentParser('WiFi Imaging Benchmark')
-    parser.add_argument('--dataset', choices = ['ARIL', 'SignFi'], default='ARIL')
-    parser.add_argument('--model', choices = ['ResNet18'], default='ResNet18')
+    parser.add_argument('--dataset', choices=['ARIL', 'SignFi'], default='ARIL')
+    parser.add_argument('--model', choices=['ResNet18'], default='ResNet18')
     args = parser.parse_args()
 
     print(root)
