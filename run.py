@@ -1,4 +1,6 @@
 import argparse
+
+import numpy as np
 import torch
 import torch.nn as nn
 import argparse
@@ -11,6 +13,7 @@ from sklearn.metrics import confusion_matrix, accuracy_score, precision_score, r
 def train(model, tensor_loader, num_epochs, learning_rate, criterion, device, data_model):
     model = model.to(device)
     optimizer = torch.optim.Adam(model.parameters(), lr=learning_rate)
+    print("train epochs: {}", num_epochs)
     for epoch in range(num_epochs):
         model.train()
         epoch_loss = 0
@@ -45,6 +48,14 @@ def test(model, tensor_loader, criterion, device):
     model.eval()
     test_acc = 0
     test_loss = 0
+    total_samples = 0
+    weighted_precision_sum = 0
+    weighted_recall_sum = 0
+    weighted_f1_sum = 0
+    weighted_ck_sum = 0
+    weighted_mcc_sum = 0
+
+    sum_cm = np.zeros((6, 6))
     for data in tensor_loader:
         inputs, labels = data
         inputs = inputs.to(device)
@@ -62,6 +73,9 @@ def test(model, tensor_loader, criterion, device):
         # 将PyTorch Tensor转换为NumPy数组
         y_true = labels.cpu().numpy()
         y_pred = predict_y.cpu().numpy()
+
+        num_samples = len(y_true)
+        total_samples += num_samples
 
         # 计算混淆矩阵
         cm = confusion_matrix(y_true, y_pred)
@@ -94,6 +108,22 @@ def test(model, tensor_loader, criterion, device):
 
         test_acc += accuracy
         test_loss += loss.item() * inputs.size(0)
+        sum_cm += cm
+        weighted_precision_sum += num_samples * precision
+        weighted_recall_sum += num_samples * recall
+        weighted_f1_sum += num_samples * f1
+        weighted_ck_sum += num_samples * cohen_kappa_score()
+        weighted_mcc_sum += num_samples * mcc
+
+    test_acc = test_acc/len(tensor_loader)
+    test_loss = test_loss/len(tensor_loader.dataset)
+    print("confusion matrix: ", sum_cm)
+    print("validation accuracy:{:.4f}, loss:{:.5f}".format(float(test_acc), float(test_loss)))
+    print("Precision: ", weighted_precision_sum / total_samples)
+    print("Recall: ", weighted_recall_sum / total_samples)
+    print("F1 Score: ", weighted_f1_sum / total_samples)
+    print("cohen_kappa_score: ", weighted_ck_sum / total_samples)
+    print("MCC: ", weighted_mcc_sum / total_samples)
 
 
 def main():
