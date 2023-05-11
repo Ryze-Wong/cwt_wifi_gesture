@@ -4,7 +4,7 @@ import torch.nn as nn
 import torch.nn.functional as F
 from einops import rearrange, reduce, repeat
 from einops.layers.torch import Rearrange, Reduce
-from util import CBAM
+from attention import CBAM
 
 
 class Block(nn.Module):
