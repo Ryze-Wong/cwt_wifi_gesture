@@ -34,9 +34,9 @@ class Block(nn.Module):
         return x
 
 
-class ARIL_ResNet(nn.Module):
+class ResNet(nn.Module):
     def __init__(self, ResBlock, layer_list, num_channels=52, num_classes=7):
-        super(ARIL_ResNet, self).__init__()
+        super(ResNet, self).__init__()
         self.reshape = nn.Sequential(
             nn.Conv2d(1, 3, 7, stride=(3, 1)),
             nn.ReLU(),
@@ -92,8 +92,12 @@ class ARIL_ResNet(nn.Module):
         return nn.Sequential(*layers)
 
 
-def ARIL_ResNet18(num_classes):
-    return ARIL_ResNet(Block, [2, 2, 2, 2], num_classes=num_classes)
+def ARIL_ResNet18(num_classes, num_channels):
+    return ResNet(Block, [2, 2, 2, 2], num_classes=num_classes)
+
+
+def SignFi_ResNet18(num_classes, num_channels):
+    return ResNet(Block, [2, 2, 2, 2], num_channels=num_channels, num_classes=num_classes)
 
 
 if __name__ == '__main__':
