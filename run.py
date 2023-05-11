@@ -2,7 +2,7 @@ import argparse
 import torch
 import torch.nn as nn
 import argparse
-import tqdm
+from tqdm import tqdm
 import time
 from util import load_data_n_model
 from sklearn.metrics import confusion_matrix, accuracy_score, precision_score, recall_score, f1_score, cohen_kappa_score, matthews_corrcoef
@@ -15,8 +15,7 @@ def train(model, tensor_loader, num_epochs, learning_rate, criterion, device, da
         model.train()
         epoch_loss = 0
         epoch_accuracy = 0
-        for i, data in enumerate(tensor_loader):
-            inputs, labels = data
+        for (inputs, labels) in tqdm(tensor_loader):
             inputs = inputs.to(device)
             labels = labels.to(device)
             labels = labels.type(torch.LongTensor)
@@ -26,8 +25,6 @@ def train(model, tensor_loader, num_epochs, learning_rate, criterion, device, da
             outputs = outputs.to(device)
             outputs = outputs.type(torch.FloatTensor)
             loss = criterion(outputs, labels)
-            if i % 10 == 0:
-                print("LOSS:", loss.item())
             loss.backward()
             optimizer.step()
 
@@ -38,7 +35,7 @@ def train(model, tensor_loader, num_epochs, learning_rate, criterion, device, da
         epoch_loss = epoch_loss / len(tensor_loader.dataset)
         epoch_accuracy = epoch_accuracy / len(tensor_loader)
         if epoch % 50 == 0:
-            torch.save(model, "./weights/" + data_model + "/" + str(epoch + 1) + "_" + time.time() + "_" + str(
+            torch.save(model, "./weights/" + data_model + "/" + str(epoch + 1) + "_" + str(time.time()) + "_" + str(
                 epoch_accuracy) + "_" + str(epoch_loss) + "---.pth")
         print('Epoch:{}, Accuracy:{:.4f},Loss:{:.9f}'.format(epoch + 1, float(epoch_accuracy), float(epoch_loss)))
     return
