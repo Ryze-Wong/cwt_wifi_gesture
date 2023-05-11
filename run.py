@@ -5,7 +5,7 @@ import argparse
 import tqdm
 import time
 from util import load_data_n_model
-from sklearn.metrics import confusion_matrix, accuracy_score, precision_score, recall_score, f1_score
+from sklearn.metrics import confusion_matrix, accuracy_score, precision_score, recall_score, f1_score, cohen_kappa_score, matthews_corrcoef
 
 
 def train(model, tensor_loader, num_epochs, learning_rate, criterion, device, data_model):
@@ -86,6 +86,14 @@ def test(model, tensor_loader, criterion, device):
         # 计算F1分数
         f1 = f1_score(y_true, y_pred, average='macro')
         print("F1 Score:", f1)
+
+        # 计算cohen_kappa_score
+        cohen_kappa = cohen_kappa_score(y_true, y_pred)
+        print("cohen_kappa_score: ", cohen_kappa)
+
+        # 计算matthews_corrcoef
+        mcc = matthews_corrcoef(y_true, y_pred)
+        print("MCC: ", mcc)
 
         test_acc += accuracy
         test_loss += loss.item() * inputs.size(0)
