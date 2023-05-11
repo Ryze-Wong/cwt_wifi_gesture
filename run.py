@@ -112,7 +112,7 @@ def test(model, tensor_loader, criterion, device):
         weighted_precision_sum += num_samples * precision
         weighted_recall_sum += num_samples * recall
         weighted_f1_sum += num_samples * f1
-        weighted_ck_sum += num_samples * cohen_kappa_score()
+        weighted_ck_sum += num_samples * cohen_kappa
         weighted_mcc_sum += num_samples * mcc
 
     test_acc = test_acc/len(tensor_loader)

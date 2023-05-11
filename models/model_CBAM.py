@@ -94,8 +94,8 @@ class ARIL_ResNet(nn.Module):
         return nn.Sequential(*layers)
 
 
-def ARIL_ResNet18_CBAM(num_classes):
-    return ARIL_ResNet(Block, [2, 2, 2, 2], num_classes=num_classes)
+def ARIL_ResNet18_CBAM(num_classes, num_channels):
+    return ARIL_ResNet(Block, [2, 2, 2, 2], num_classes=num_classes, num_channels=num_channels)
 
 
 if __name__ == '__main__':

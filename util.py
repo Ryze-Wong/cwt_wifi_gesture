@@ -28,7 +28,7 @@ def load_data_n_model(dataset_name, model_name, root):
         if model_name == 'ResNet18':
             print("using model: ResNet18")
             model = ARIL_ResNet18(num_classes, num_channels)
-            train_epoch = 200  # 70
+            train_epoch = 100  # 70
 
         elif model_name == "ResNet18_CBAM":
             print("using model: ResNet18_CBAM")
