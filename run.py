@@ -44,7 +44,7 @@ def train(model, tensor_loader, num_epochs, learning_rate, criterion, device, da
     return
 
 
-def test(model, tensor_loader, criterion, device):
+def test(model, tensor_loader, criterion, device, data_model):
     model.eval()
     test_acc = 0
     test_loss = 0
@@ -115,7 +115,7 @@ def test(model, tensor_loader, criterion, device):
         weighted_ck_sum += num_samples * cohen_kappa
         weighted_mcc_sum += num_samples * mcc
 
-    print("--------------------below are average evaluations")
+    print("--------------------below are {} average evaluations", data_model)
     test_acc = test_acc/len(tensor_loader)
     test_loss = test_loss/len(tensor_loader.dataset)
     print("confusion matrix: ")
@@ -157,7 +157,8 @@ def main():
         model=model,
         tensor_loader=test_loader,
         criterion=criterion,
-        device=device
+        device=device,
+        data_model=data_model
     )
     return
 
