@@ -55,7 +55,11 @@ def test(model, tensor_loader, criterion, device, data_model):
     weighted_ck_sum = 0
     weighted_mcc_sum = 0
 
-    sum_cm = np.zeros((6, 6))
+    classes = 6
+    if "SignFi" in data_model:
+        classes = 276
+    sum_cm = np.zeros((classes, classes))
+
     for data in tensor_loader:
         inputs, labels = data
         inputs = inputs.to(device)
