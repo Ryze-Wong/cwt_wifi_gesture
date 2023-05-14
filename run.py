@@ -115,6 +115,7 @@ def test(model, tensor_loader, criterion, device):
         weighted_ck_sum += num_samples * cohen_kappa
         weighted_mcc_sum += num_samples * mcc
 
+    print("--------------------below are average evaluations")
     test_acc = test_acc/len(tensor_loader)
     test_loss = test_loss/len(tensor_loader.dataset)
     print("confusion matrix: ", sum_cm)
