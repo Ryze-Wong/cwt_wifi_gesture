@@ -10,7 +10,7 @@ from models.model_CBAM import ARIL_ResNet18_CBAM
 
 def load_data_n_model(dataset_name, model_name, root):
     channels = {'ARIL': 52, 'SignFi': 90}
-    classes = {'ARIL': 6, 'SignFi': 276}
+    classes = {'ARIL': 6, 'SignFi': 277}
     if dataset_name == 'ARIL':
         num_classes = classes['ARIL']
         num_channels = channels['ARIL']

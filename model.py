@@ -93,7 +93,7 @@ class ResNet(nn.Module):
 
 
 def ARIL_ResNet18(num_classes, num_channels):
-    return ResNet(Block, [2, 2, 2, 2], num_classes=num_classes)
+    return ResNet(Block, [2, 2, 2, 2], num_channels=num_channels, num_classes=num_classes)
 
 
 def SignFi_ResNet18(num_classes, num_channels):

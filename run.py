@@ -118,7 +118,8 @@ def test(model, tensor_loader, criterion, device):
     print("--------------------below are average evaluations")
     test_acc = test_acc/len(tensor_loader)
     test_loss = test_loss/len(tensor_loader.dataset)
-    print("confusion matrix: ", sum_cm)
+    print("confusion matrix: ")
+    print(sum_cm)
     print("validation accuracy:{:.4f}, loss:{:.5f}".format(float(test_acc), float(test_loss)))
     print("Precision: ", weighted_precision_sum / total_samples)
     print("Recall: ", weighted_recall_sum / total_samples)
@@ -134,7 +135,7 @@ def main():
     parser.add_argument('--model', choices=['ResNet18', 'ResNet18_CBAM'], default='ResNet18')
     args = parser.parse_args()
 
-    print(root)
+    print("data root: ", root)
 
     train_loader, test_loader, model, train_epoch = load_data_n_model(args.dataset, args.model, root)
     criterion = nn.CrossEntropyLoss()
