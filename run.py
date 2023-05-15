@@ -80,35 +80,38 @@ def test(model, tensor_loader, criterion, device, data_model):
 
         # 计算混淆矩阵
         cm = confusion_matrix(y_true, y_pred)
-        print("Confusion Matrix:")
-        print(cm)
 
         # 计算准确率
         acc = accuracy_score(y_true, y_pred)
-        print("Accuracy:", acc)
 
         # 计算精确率
         precision = precision_score(y_true, y_pred, average='macro')
-        print("Precision:", precision)
 
         # 计算召回率
         recall = recall_score(y_true, y_pred, average='macro')
-        print("Recall:", recall)
 
         # 计算F1分数
         f1 = f1_score(y_true, y_pred, average='macro')
-        print("F1 Score:", f1)
 
         # 计算cohen_kappa_score
         cohen_kappa = cohen_kappa_score(y_true, y_pred)
-        print("cohen_kappa_score: ", cohen_kappa)
 
         # 计算matthews_corrcoef
         mcc = matthews_corrcoef(y_true, y_pred)
-        print("MCC: ", mcc)
 
         test_acc += accuracy
         test_loss += loss.item() * inputs.size(0)
+
+
+        # print("Confusion Matrix:")
+        # print(cm)
+        # print("Accuracy:", acc)
+        # print("Precision:", precision)
+        # print("Recall:", recall)
+        # print("F1 Score:", f1)
+        # print("cohen_kappa_score: ", cohen_kappa)
+        # print("MCC: ", mcc)
+
         if "SignFi" not in data_model:
             sum_cm += cm
         weighted_precision_sum += num_samples * precision
@@ -117,7 +120,7 @@ def test(model, tensor_loader, criterion, device, data_model):
         weighted_ck_sum += num_samples * cohen_kappa
         weighted_mcc_sum += num_samples * mcc
 
-    print("--------------------below are {} average evaluations", data_model)
+    print("--------------------below are {} average evaluations".format(data_model))
     test_acc = test_acc/len(tensor_loader)
     test_loss = test_loss/len(tensor_loader.dataset)
     print("confusion matrix: ")
@@ -135,7 +138,7 @@ def main():
     root = './data/'
     parser = argparse.ArgumentParser('WiFi Imaging Benchmark')
     parser.add_argument('--dataset', choices=['ARIL', 'SignFi'], default='ARIL')
-    parser.add_argument('--model', choices=['ResNet18', 'ResNet18_CBAM'], default='ResNet18')
+    parser.add_argument('--model', choices=['ResNet18', 'ResNet18_CBAM', 'ResNet50'], default='ResNet18')
     parser.add_argument("--test", default=False, action='store_true', help='If added, the epoch will be 2')
 
     args = parser.parse_args()
@@ -148,7 +151,7 @@ def main():
     device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
     model.to(device)
 
-    print("train epochs: {}", train_epoch)
+    print("train epochs: {}".format(train_epoch))
 
     data_model = args.dataset + '_' + args.model
 

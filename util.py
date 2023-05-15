@@ -4,7 +4,7 @@ import torch.nn as nn
 import torchvision
 
 from dataset import ARIL_dataset, SignFi_dataset
-from model import ARIL_ResNet18
+from model import ARIL_ResNet18, ARIL_ResNet50, SignFi_ResNet50
 from models.model_CBAM import ARIL_ResNet18_CBAM
 
 
@@ -34,6 +34,12 @@ def load_data_n_model(dataset_name, model_name, root, test):
             print("using model: ResNet18_CBAM")
             model = ARIL_ResNet18_CBAM(num_classes, num_channels)
             train_epoch = 100  # 70
+
+        elif model_name == 'ResNet50':
+            print("using model: ResNet50")
+            model = ARIL_ResNet50(num_classes, num_channels)
+            train_epoch = 100  # 70
+
     elif dataset_name == 'SignFi':
         num_classes = classes['SignFi']
         num_channels = channels['SignFi']
@@ -56,6 +62,11 @@ def load_data_n_model(dataset_name, model_name, root, test):
         elif model_name == "ResNet18_CBAM":
             print("using model: ResNet18_CBAM")
             model = ARIL_ResNet18_CBAM(num_classes, num_channels)
+            train_epoch = 100  # 70
+
+        elif model_name == "ResNet50":
+            print("using model: ResNet50")
+            model = SignFi_ResNet50(num_classes, num_channels)
             train_epoch = 100  # 70
 
     if test:

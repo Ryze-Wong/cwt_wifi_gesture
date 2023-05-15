@@ -136,6 +136,9 @@ def ARIL_ResNet50(num_classes, num_channels):
 def SignFi_ResNet18(num_classes, num_channels):
     return ResNet(Block, [2, 2, 2, 2], num_channels=num_channels, num_classes=num_classes)
 
+def SignFi_ResNet50(num_classes, num_channels):
+    return ResNet(Bottleneck, [3, 4, 6, 3], num_channels=num_channels, num_classes=num_classes)
+
 
 if __name__ == '__main__':
     input = torch.ones((4, 52, 512, 512))
