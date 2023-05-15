@@ -58,7 +58,7 @@ def load_data_n_model(dataset_name, model_name, root, test):
             model = ARIL_ResNet18_CBAM(num_classes, num_channels)
             train_epoch = 100  # 70
 
-    if test == "True":
+    if test:
         train_epoch = 2
 
     return train_loader, test_loader, model, train_epoch
