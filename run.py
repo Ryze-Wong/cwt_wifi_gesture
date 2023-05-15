@@ -56,8 +56,6 @@ def test(model, tensor_loader, criterion, device, data_model):
     weighted_mcc_sum = 0
 
     classes = 6
-    if "SignFi" in data_model:
-        classes = 276
     sum_cm = np.zeros((classes, classes))
 
     for data in tensor_loader:
@@ -112,7 +110,8 @@ def test(model, tensor_loader, criterion, device, data_model):
 
         test_acc += accuracy
         test_loss += loss.item() * inputs.size(0)
-        sum_cm += cm
+        if "SignFi" not in data_model:
+            sum_cm += cm
         weighted_precision_sum += num_samples * precision
         weighted_recall_sum += num_samples * recall
         weighted_f1_sum += num_samples * f1
@@ -123,7 +122,8 @@ def test(model, tensor_loader, criterion, device, data_model):
     test_acc = test_acc/len(tensor_loader)
     test_loss = test_loss/len(tensor_loader.dataset)
     print("confusion matrix: ")
-    print(sum_cm)
+    if "SignFi" not in data_model:
+        print(sum_cm)
     print("validation accuracy:{:.4f}, loss:{:.5f}".format(float(test_acc), float(test_loss)))
     print("Precision: ", weighted_precision_sum / total_samples)
     print("Recall: ", weighted_recall_sum / total_samples)

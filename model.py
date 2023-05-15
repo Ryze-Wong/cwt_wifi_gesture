@@ -6,6 +6,39 @@ from einops import rearrange, reduce, repeat
 from einops.layers.torch import Rearrange, Reduce
 
 
+class Bottleneck(nn.Module):
+    expansion = 4
+
+    def __init__(self, in_channels, out_channels, i_downsample=None, stride=1):
+        super(Bottleneck, self).__init__()
+
+        self.conv1 = nn.Conv2d(in_channels, out_channels, kernel_size=1, stride=1, padding=0)
+        self.batch_norm1 = nn.BatchNorm2d(out_channels)
+
+        self.conv2 = nn.Conv2d(out_channels, out_channels, kernel_size=3, stride=stride, padding=1)
+        self.batch_norm2 = nn.BatchNorm2d(out_channels)
+
+        self.conv3 = nn.Conv2d(out_channels, out_channels * self.expansion, kernel_size=1, stride=1, padding=0)
+        self.batch_norm3 = nn.BatchNorm2d(out_channels * self.expansion)
+
+        self.i_downsample = i_downsample
+        self.stride = stride
+        self.relu = nn.ReLU()
+
+    def forward(self, x):
+        identity = x.clone()
+        x = self.relu(self.batch_norm1(self.conv1(x)))
+        x = self.relu(self.batch_norm2(self.conv2(x)))
+        x = self.conv3(x)
+        x = self.batch_norm3(x)
+        if self.i_downsample is not None:
+            identity = self.i_downsample(identity)
+        x += identity
+        x = self.relu(x)
+
+        return x
+
+
 class Block(nn.Module):
     expansion = 1
 
@@ -96,12 +129,17 @@ def ARIL_ResNet18(num_classes, num_channels):
     return ResNet(Block, [2, 2, 2, 2], num_channels=num_channels, num_classes=num_classes)
 
 
+def ARIL_ResNet50(num_classes, num_channels):
+    return ResNet(Bottleneck, [3, 4, 6, 3], num_channels=num_channels, num_classes=num_classes)
+
+
 def SignFi_ResNet18(num_classes, num_channels):
     return ResNet(Block, [2, 2, 2, 2], num_channels=num_channels, num_classes=num_classes)
 
 
 if __name__ == '__main__':
     input = torch.ones((4, 52, 512, 512))
-    model = ARIL_ResNet18(num_classes=7)
+    # model = ARIL_ResNet18(num_classes=7)
+    model = ARIL_ResNet50(num_classes=7, num_channels=52)
     output = model(input)
     print(output.shape)
