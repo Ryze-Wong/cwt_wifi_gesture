@@ -137,11 +137,13 @@ def main():
     parser = argparse.ArgumentParser('WiFi Imaging Benchmark')
     parser.add_argument('--dataset', choices=['ARIL', 'SignFi'], default='ARIL')
     parser.add_argument('--model', choices=['ResNet18', 'ResNet18_CBAM'], default='ResNet18')
+    parser.add_argument("--test", default='False', action='store_true', help='If added, the epoch will be 2')
+
     args = parser.parse_args()
 
     print("data root: ", root)
 
-    train_loader, test_loader, model, train_epoch = load_data_n_model(args.dataset, args.model, root)
+    train_loader, test_loader, model, train_epoch = load_data_n_model(args.dataset, args.model, root, args.test)
     criterion = nn.CrossEntropyLoss()
     device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
     model.to(device)
