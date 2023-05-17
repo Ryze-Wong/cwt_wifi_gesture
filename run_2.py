@@ -4,16 +4,32 @@ import numpy as np
 import torch
 import torch.nn as nn
 import argparse
+import random
+import os
 from tqdm import tqdm
 import time
 from util import load_data_n_model
-from sklearn.metrics import confusion_matrix, accuracy_score, precision_score, recall_score, f1_score, cohen_kappa_score, matthews_corrcoef
+from sklearn.metrics import confusion_matrix, accuracy_score, precision_score, recall_score, f1_score, \
+    cohen_kappa_score, matthews_corrcoef
+
+
+def seed_torch(seed=42):
+    random.seed(seed)
+    os.environ['PYTHONHASHSEED'] = str(seed)  # 为了禁止hash随机化，使得实验可复现
+    np.random.seed(seed)
+    torch.manual_seed(seed)
+    torch.cuda.manual_seed(seed)
+    torch.cuda.manual_seed_all(seed)  # if you are using multi-GPU.
+    torch.backends.cudnn.benchmark = False
+    torch.backends.cudnn.deterministic = True
 
 
 def train(model, train_tensor_loader, test_tensor_loader, num_epochs, learning_rate, criterion, device, data_model):
     model = model.to(device)
     optimizer = torch.optim.Adam(model.parameters(), lr=learning_rate)
     accuracy_list = []
+    cur_time = time.time()
+    cur_time = str(cur_time).split('.')[0]
     for epoch in range(num_epochs):
         model.train()
         epoch_loss = 0
@@ -65,7 +81,7 @@ def train(model, train_tensor_loader, test_tensor_loader, num_epochs, learning_r
             accuracy_list.append(accuracy)
             print('save beat weight....', np.max(accuracy_list))
             if accuracy >= np.max(accuracy_list):
-                torch.save(model, "./weights/" + data_model + "/" + "best_weight.pth")
+                torch.save(model, "./weights/" + data_model + "/" + cur_time + "_best_weight.pth")
         # if epoch % 50 == 0:
         #     torch.save(model, "./weights/" + data_model + "/" + str(epoch + 1) + "_" + str(time.time()) + "_" + str(
         #         epoch_accuracy) + "_" + str(epoch_loss) + "---.pth")
@@ -132,7 +148,6 @@ def test(model, tensor_loader, criterion, device, data_model):
         test_acc += accuracy
         test_loss += loss.item() * inputs.size(0)
 
-
         # print("Confusion Matrix:")
         # print(cm)
         # print("Accuracy:", acc)
@@ -151,8 +166,8 @@ def test(model, tensor_loader, criterion, device, data_model):
         weighted_mcc_sum += num_samples * mcc
 
     print("--------------------below are {} average evaluations".format(data_model))
-    test_acc = test_acc/len(tensor_loader)
-    test_loss = test_loss/len(tensor_loader.dataset)
+    test_acc = test_acc / len(tensor_loader)
+    test_loss = test_loss / len(tensor_loader.dataset)
     print("confusion matrix: ")
     if "SignFi" not in data_model:
         print(sum_cm)
@@ -165,10 +180,13 @@ def test(model, tensor_loader, criterion, device, data_model):
 
 
 def main():
+    seed_torch()
     root = './data/'
     parser = argparse.ArgumentParser('WiFi Imaging Benchmark')
     parser.add_argument('--dataset', choices=['ARIL', 'SignFi'], default='ARIL')
-    parser.add_argument('--model', choices=['ResNet18', 'ResNet18_CBAM', 'ResNet50', 'ResNet18_CBAM2', 'ResNet18_CBAM2_mish'], default='ResNet18')
+    parser.add_argument('--model',
+                        choices=['ResNet18', 'ResNet18_CBAM', 'ResNet50', 'ResNet18_CBAM2', 'ResNet18_CBAM2_mish'],
+                        default='ResNet18')
     parser.add_argument("--test", default=False, action='store_true', help='If added, the epoch will be 2')
 
     args = parser.parse_args()
@@ -187,8 +205,8 @@ def main():
 
     train(
         model=model,
-        train_tensor_loader = train_loader,
-        test_tensor_loader = test_loader,
+        train_tensor_loader=train_loader,
+        test_tensor_loader=test_loader,
         num_epochs=train_epoch,
         learning_rate=1e-3,
         criterion=criterion,
