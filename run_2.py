@@ -28,10 +28,10 @@ def train(model, train_tensor_loader, test_tensor_loader, num_epochs, learning_r
             outputs = outputs.to(device)
             outputs = outputs.type(torch.FloatTensor)
             loss = criterion(outputs, labels)
-            print("outputs shape:")
-            print(outputs.shape)
-            print("labels shape")
-            print(labels.shape)
+            # print("outputs shape:")
+            # print(outputs.shape)
+            # print("labels shape")
+            # print(labels.shape)
             loss.backward()
             optimizer.step()
 
@@ -58,9 +58,9 @@ def train(model, train_tensor_loader, test_tensor_loader, num_epochs, learning_r
                 predict_y = torch.argmax(outputs, dim=1).to(device)
                 accuracy = (predict_y == labels.to(device)).sum().item() / labels.size(0)
                 accuracy_list.append(accuracy)
-                if accuracy >= np.max(accuracy_list):
-                    print('save beat weight....', np.max(accuracy_list))
-                    torch.save(model, "./weights/" + data_model + "/" + "best_weight.pth")
+            if accuracy >= np.max(accuracy_list):
+                print('save beat weight....', np.max(accuracy_list))
+                torch.save(model, "./weights/" + data_model + "/" + "best_weight.pth")
         # if epoch % 50 == 0:
         #     torch.save(model, "./weights/" + data_model + "/" + str(epoch + 1) + "_" + str(time.time()) + "_" + str(
         #         epoch_accuracy) + "_" + str(epoch_loss) + "---.pth")
@@ -182,7 +182,8 @@ def main():
 
     train(
         model=model,
-        tensor_loader=train_loader,
+        train_tensor_loader = train_loader,
+        test_tensor_loader = test_loader,
         num_epochs=train_epoch,
         learning_rate=1e-3,
         criterion=criterion,
