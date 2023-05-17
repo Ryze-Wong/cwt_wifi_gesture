@@ -46,3 +46,16 @@ class CBAM(nn.Module):
         out = self.channel_attention(x) * x
         out = self.spatial_attention(out) * out
         return out
+
+class CBAM_1(nn.Module):
+    def __init__(self, channel):
+        super(CBAM_1, self).__init__()
+        self.channel_attention = ChannelAttentionModule(channel)
+        self.spatial_attention = SpatialAttentionModule()
+
+    def forward(self, x):
+
+        out_1 = self.channel_attention(x) * x
+        out_2 = self.spatial_attention(x) * x
+
+        return out_1+out_2

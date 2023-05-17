@@ -8,6 +8,7 @@ from model import ARIL_ResNet18, ARIL_ResNet50, SignFi_ResNet50
 from models.model_CBAM import ARIL_ResNet18_CBAM
 from models.model_CBAM2 import ARIL_ResNet18_CBAM2
 from models.model_CBAM2_mish import ARIL_ResNet18_CBAM2_mish
+from models.model_CBAM2_parallel import ARIL_ResNet18_CBAM2_parallel
 
 
 def load_data_n_model(dataset_name, model_name, root, test):
@@ -51,6 +52,11 @@ def load_data_n_model(dataset_name, model_name, root, test):
             print("using model: ResNet18_CBAM2_mish")
             model = ARIL_ResNet18_CBAM2_mish(num_classes, num_channels)
             train_epoch = 100  # 70
+
+        elif model_name == 'ARIL_ResNet18_CBAM2_parallel':
+            print("using model: ARIL_ResNet18_CBAM2_parallel")
+            model = ARIL_ResNet18_CBAM2_parallel(num_classes, num_channels)
+            train_epoch = 150  # 70
 
     elif dataset_name == 'SignFi':
         num_classes = classes['SignFi']
