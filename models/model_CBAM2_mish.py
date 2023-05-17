@@ -110,12 +110,12 @@ class ARIL_ResNet(nn.Module):
         return nn.Sequential(*layers)
 
 
-def ARIL_ResNet18_CBAM2(num_classes, num_channels):
+def ARIL_ResNet18_CBAM2_mish(num_classes, num_channels):
     return ARIL_ResNet(Block, [2, 2, 2, 2], num_classes=num_classes, num_channels=num_channels)
 
 
 if __name__ == '__main__':
     input = torch.ones((4, 52, 512, 512))
-    model = ARIL_ResNet18_CBAM2(num_classes=7, num_channels=52)
+    model = ARIL_ResNet18_CBAM2_mish(num_classes=7, num_channels=52)
     output = model(input)
     print(output.shape)
