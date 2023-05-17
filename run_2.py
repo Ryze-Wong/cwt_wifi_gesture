@@ -62,9 +62,9 @@ def train(model, train_tensor_loader, test_tensor_loader, num_epochs, learning_r
                 test_accuracy += (predict_y == labels.to(device)).sum().item() / labels.size(0)
             accuracy = test_accuracy / len(test_tensor_loader)
             print('accuracy:', accuracy)
+            print('save beat weight....', np.max(accuracy_list))
             accuracy_list.append(accuracy)
             if accuracy >= np.max(accuracy_list):
-                print('save beat weight....', np.max(accuracy_list))
                 torch.save(model, "./weights/" + data_model + "/" + "best_weight.pth")
         # if epoch % 50 == 0:
         #     torch.save(model, "./weights/" + data_model + "/" + str(epoch + 1) + "_" + str(time.time()) + "_" + str(

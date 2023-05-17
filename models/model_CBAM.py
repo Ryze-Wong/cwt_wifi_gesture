@@ -78,7 +78,7 @@ class ARIL_ResNet(nn.Module):
         x = x.reshape(x.shape[0], -1)
         if self.num_classes < 256:
             x = self.fc_1(x)
-            x = nn.Dropout(0.5)(x)
+            # x = nn.Dropout(0.5)(x)
             x = self.fc_2(x)
         else:
             x = nn.Dropout(0.5)(x)
