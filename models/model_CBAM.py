@@ -46,6 +46,7 @@ class ARIL_ResNet(nn.Module):
             nn.ReLU()
         )
         self.in_channels = 64
+        self.num_classes = num_classes
         self.CBAM = CBAM(num_channels)  # 通道注意力机制
         self.conv1 = nn.Conv2d(num_channels, 64, kernel_size=7, stride=2, padding=3, bias=False)
         self.batch_norm1 = nn.BatchNorm2d(64)
@@ -71,9 +72,15 @@ class ARIL_ResNet(nn.Module):
         x = self.layer4(x)
         x = self.avgpool(x)
         x = x.reshape(x.shape[0], -1)
-        x = self.fc(x)
-
+        if self.num_classes < 256:
+            x = self.fc_1(x)
+            x = nn.Dropout(0.5)(x)
+            x = self.fc_2(x)
+        else:
+            x = nn.Dropout(0.5)(x)
+            x = self.fc_3(x)
         return x
+
 
     def _make_layer(self, ResBlock, blocks, planes, stride=1):
         ii_downsample = None

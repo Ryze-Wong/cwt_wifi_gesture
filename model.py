@@ -78,7 +78,7 @@ class ResNet(nn.Module):
             nn.ReLU()
         )
         self.in_channels = 64
-
+        self.num_classes = num_classes
         self.conv1 = nn.Conv2d(num_channels, 64, kernel_size=7, stride=2, padding=3, bias=False)
         self.batch_norm1 = nn.BatchNorm2d(64)
         self.relu = nn.ReLU()
@@ -90,7 +90,12 @@ class ResNet(nn.Module):
         self.layer4 = self._make_layer(ResBlock, layer_list[3], planes=512, stride=2)
 
         self.avgpool = nn.AdaptiveAvgPool2d((1, 1))
-        self.fc = nn.Linear(512 * ResBlock.expansion, num_classes)
+
+        self.fc_1 = nn.Linear(512 * ResBlock.expansion, 256)
+
+        self.fc_2 = nn.Linear(256, num_classes)
+
+        self.fc_3 = nn.Linear(512 * ResBlock.expansion, num_classes)
 
     def forward(self, x):
         # x = self.reshape(x)
@@ -102,8 +107,13 @@ class ResNet(nn.Module):
         x = self.layer4(x)
         x = self.avgpool(x)
         x = x.reshape(x.shape[0], -1)
-        x = self.fc(x)
-
+        if self.num_classes < 256:
+            x = self.fc_1(x)
+            x = nn.Dropout(0.5)(x)
+            x = self.fc_2(x)
+        else:
+            x = nn.Dropout(0.5)(x)
+            x = self.fc_3(x)
         return x
 
     def _make_layer(self, ResBlock, blocks, planes, stride=1):
@@ -143,6 +153,6 @@ def SignFi_ResNet50(num_classes, num_channels):
 if __name__ == '__main__':
     input = torch.ones((4, 52, 512, 512))
     # model = ARIL_ResNet18(num_classes=7)
-    model = ARIL_ResNet50(num_classes=7, num_channels=52)
+    model = ARIL_ResNet50(num_classes=256, num_channels=52)
     output = model(input)
     print(output.shape)

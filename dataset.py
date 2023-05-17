@@ -34,8 +34,10 @@ def SignFi_dataset(root):
     # train data
     origin_train_data_path = root + 'SignFi/' + 'SignFi_train_data'
     train_data_list = []
+    print("load data: ")
     for i in range(1, 7):
         path = origin_train_data_path + str(i) + '.mat'
+        print(path)
         tr_data = mat73.loadmat(path)
         train_data = tr_data['data']
         train_data = torch.from_numpy(train_data).type(torch.FloatTensor)
@@ -43,10 +45,10 @@ def SignFi_dataset(root):
     train_data = torch.cat(train_data_list, dim=0)
 
     train_label_path = root + 'SignFi/' + 'SignFi_train_label.mat'
-    tr_label = mat73.loadmat(train_label_path)
+    tr_label = sio.loadmat(train_label_path)
     train_label = tr_label['label_lab']
 
-    train_data = torch.from_numpy(train_data).type(torch.FloatTensor)
+    # train_data = torch.from_numpy(train_data).type(torch.FloatTensor)
     train_label = torch.from_numpy(train_label).type(torch.LongTensor)
 
     test_data_path = root + 'SignFi/' + 'SignFi_test.mat'
