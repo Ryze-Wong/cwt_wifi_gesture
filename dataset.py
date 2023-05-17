@@ -35,7 +35,7 @@ def SignFi_dataset(root):
     origin_train_data_path = root + 'SignFi/' + 'SignFi_train_data'
     train_data_list = []
     print("load data: ")
-    for i in range(1, 7):
+    for i in range(1, 1):
         path = origin_train_data_path + str(i) + '.mat'
         print(path)
         tr_data = mat73.loadmat(path)

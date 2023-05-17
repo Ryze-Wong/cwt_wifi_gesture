@@ -46,7 +46,7 @@ def load_data_n_model(dataset_name, model_name, root, test):
         elif model_name == 'ResNet18_CBAM2':
             print("using model: ResNet18_CBAM2")
             model = ARIL_ResNet18_CBAM2(num_classes, num_channels)
-            train_epoch = 100  # 70
+            train_epoch = 200  # 70
 
         elif model_name == 'ResNet18_CBAM2_mish':
             print("using model: ResNet18_CBAM2_mish")
@@ -56,7 +56,7 @@ def load_data_n_model(dataset_name, model_name, root, test):
         elif model_name == 'ARIL_ResNet18_CBAM2_parallel':
             print("using model: ARIL_ResNet18_CBAM2_parallel")
             model = ARIL_ResNet18_CBAM2_parallel(num_classes, num_channels)
-            train_epoch = 150  # 70
+            train_epoch = 200  # 70
 
     elif dataset_name == 'SignFi':
         num_classes = classes['SignFi']
