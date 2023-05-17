@@ -59,7 +59,11 @@ class ARIL_ResNet(nn.Module):
         self.layer4 = self._make_layer(ResBlock, layer_list[3], planes=512, stride=2)
 
         self.avgpool = nn.AdaptiveAvgPool2d((1, 1))
-        self.fc = nn.Linear(512 * ResBlock.expansion, num_classes)
+        self.fc_1 = nn.Linear(512 * ResBlock.expansion, 256)
+
+        self.fc_2 = nn.Linear(256, num_classes)
+
+        self.fc_3 = nn.Linear(512 * ResBlock.expansion, num_classes)
 
     def forward(self, x):
         x = self.CBAM(x)
