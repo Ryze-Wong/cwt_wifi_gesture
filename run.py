@@ -27,6 +27,10 @@ def train(model, tensor_loader, num_epochs, learning_rate, criterion, device, da
             outputs = outputs.to(device)
             outputs = outputs.type(torch.FloatTensor)
             loss = criterion(outputs, labels)
+            print("outputs shape:")
+            print(outputs.shape)
+            print("labels shape")
+            print(labels.shape)
             loss.backward()
             optimizer.step()
 

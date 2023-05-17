@@ -42,15 +42,18 @@ def SignFi_dataset(root):
         train_data = tr_data['data']
         train_data = torch.from_numpy(train_data).type(torch.FloatTensor)
         train_data_list.append(train_data)
+
     train_data = torch.cat(train_data_list, dim=0)
 
     train_label_path = root + 'SignFi/' + 'SignFi_train_label.mat'
     tr_label = sio.loadmat(train_label_path)
     train_label = tr_label['label_lab']
+    assert train_label.shape == (5520, 1)
 
     train_label = train_label.astype('uint8')
     # train_data = torch.from_numpy(train_data).type(torch.FloatTensor)
     train_label = torch.from_numpy(train_label).type(torch.LongTensor)
+    train_label -= 1
 
     test_data_path = root + 'SignFi/' + 'SignFi_test.mat'
     # load eval data
