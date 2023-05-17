@@ -57,6 +57,7 @@ class ARIL_ResNet(nn.Module):
         self.layer2 = self._make_layer(ResBlock, layer_list[1], planes=128, stride=2)
         self.layer3 = self._make_layer(ResBlock, layer_list[2], planes=256, stride=2)
         self.layer4 = self._make_layer(ResBlock, layer_list[3], planes=512, stride=2)
+        self.CBAM_1 = CBAM(512)
         self.avgpool = nn.AdaptiveAvgPool2d((1, 1))
         self.fc_1 = nn.Linear(512 * ResBlock.expansion, 256)
 
@@ -73,9 +74,11 @@ class ARIL_ResNet(nn.Module):
         x = self.layer2(x)
         x = self.layer3(x)
         x = self.layer4(x)
+        x = self.CBAM_1(x)
         x = self.avgpool(x)
         x = x.reshape(x.shape[0], -1)
         if self.num_classes < 256:
+
             x = self.fc_1(x)
             # x = nn.Dropout(0.5)(x)
             x = self.fc_2(x)
@@ -104,12 +107,12 @@ class ARIL_ResNet(nn.Module):
         return nn.Sequential(*layers)
 
 
-def ARIL_ResNet18_CBAM(num_classes, num_channels):
+def ARIL_ResNet18_CBAM2(num_classes, num_channels):
     return ARIL_ResNet(Block, [2, 2, 2, 2], num_classes=num_classes, num_channels=num_channels)
 
 
 if __name__ == '__main__':
     input = torch.ones((4, 52, 512, 512))
-    model = ARIL_ResNet18_CBAM(num_classes=7)
+    model = ARIL_ResNet18_CBAM2(num_classes=7, num_channels=52)
     output = model(input)
     print(output.shape)

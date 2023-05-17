@@ -168,7 +168,7 @@ def main():
     root = './data/'
     parser = argparse.ArgumentParser('WiFi Imaging Benchmark')
     parser.add_argument('--dataset', choices=['ARIL', 'SignFi'], default='ARIL')
-    parser.add_argument('--model', choices=['ResNet18', 'ResNet18_CBAM', 'ResNet50'], default='ResNet18')
+    parser.add_argument('--model', choices=['ResNet18', 'ResNet18_CBAM', 'ResNet50', 'ResNet18_CBAM2'], default='ResNet18')
     parser.add_argument("--test", default=False, action='store_true', help='If added, the epoch will be 2')
 
     args = parser.parse_args()
