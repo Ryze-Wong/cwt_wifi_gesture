@@ -70,14 +70,14 @@ class ARIL_ResNet(nn.Module):
     def forward(self, x):
         x = self.CBAM(x)
         # x = self.reshape(x)
-        x = self.relu(self.batch_norm1(self.conv1(x)))
+        x = self.m(self.batch_norm1(self.conv1(x)))
         x = self.max_pool(x)
         x = self.layer1(x)
         x = self.layer2(x)
         x = self.layer3(x)
         x = self.layer4(x)
         x = self.CBAM_1(x)
-        x = self.m(x)
+        # x = self.m(x)
         x = self.avgpool(x)
         x = x.reshape(x.shape[0], -1)
         if self.num_classes < 256:
