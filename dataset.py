@@ -48,6 +48,7 @@ def SignFi_dataset(root):
     tr_label = sio.loadmat(train_label_path)
     train_label = tr_label['label_lab']
 
+    train_label = train_label.astype('uint8')
     # train_data = torch.from_numpy(train_data).type(torch.FloatTensor)
     train_label = torch.from_numpy(train_label).type(torch.LongTensor)
 
