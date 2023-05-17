@@ -44,6 +44,8 @@ def SignFi_dataset(root):
         train_data_list.append(train_data)
 
     train_data = torch.cat(train_data_list, dim=0)
+    print("train_data shape: ")
+    print(train_data.shape)
 
     train_label_path = root + 'SignFi/' + 'SignFi_train_label.mat'
     tr_label = sio.loadmat(train_label_path)
