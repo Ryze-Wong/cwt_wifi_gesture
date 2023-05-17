@@ -44,5 +44,5 @@ class CBAM(nn.Module):
 
     def forward(self, x):
         out = self.channel_attention(x) * x
-        # out = self.spatial_attention(out) * out
+        out = self.spatial_attention(out) * out
         return out
