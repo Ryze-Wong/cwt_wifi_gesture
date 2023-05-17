@@ -13,11 +13,12 @@ from sklearn.metrics import confusion_matrix, accuracy_score, precision_score, r
 def train(model, train_tensor_loader, test_tensor_loader, num_epochs, learning_rate, criterion, device, data_model):
     model = model.to(device)
     optimizer = torch.optim.Adam(model.parameters(), lr=learning_rate)
+    accuracy_list = []
     for epoch in range(num_epochs):
         model.train()
         epoch_loss = 0
         epoch_accuracy = 0
-        accuracy_list = []
+        test_accuracy = 0
         for (inputs, labels) in tqdm(train_tensor_loader):
             inputs = inputs.to(device)
             labels = labels.to(device)
@@ -44,6 +45,8 @@ def train(model, train_tensor_loader, test_tensor_loader, num_epochs, learning_r
         print('Epoch:{}, Accuracy:{:.4f},Loss:{:.9f}'.format(epoch + 1, float(epoch_accuracy), float(epoch_loss)))
         model.eval()
         with torch.no_grad():
+            labels_list = []
+            pre_list = []
             for data in test_tensor_loader:
                 inputs, labels = data
                 inputs = inputs.to(device)
@@ -56,8 +59,10 @@ def train(model, train_tensor_loader, test_tensor_loader, num_epochs, learning_r
 
                 # loss = criterion(outputs, labels)
                 predict_y = torch.argmax(outputs, dim=1).to(device)
-                accuracy = (predict_y == labels.to(device)).sum().item() / labels.size(0)
-                accuracy_list.append(accuracy)
+                test_accuracy += (predict_y == labels.to(device)).sum().item() / labels.size(0)
+            accuracy = test_accuracy / len(test_tensor_loader)
+            print('accuracy:', accuracy)
+            accuracy_list.append(accuracy)
             if accuracy >= np.max(accuracy_list):
                 print('save beat weight....', np.max(accuracy_list))
                 torch.save(model, "./weights/" + data_model + "/" + "best_weight.pth")
